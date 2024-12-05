@@ -1,0 +1,47 @@
+{
+  "name": "flutter-broom",
+  "displayName": "Flutter Broom",
+  "description": "Make flutter clean architecture with flutter broom",
+  "version": "1.0.0",
+  "publisher": "GilangPratama",
+  "icon": "images/extension-icon.png",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "flutter-clean-architecture.initProvider",
+        "title": "Broom: Init Provider Setup"
+      },
+      {
+        "command": "flutter-clean-architecture.generateFeature",
+        "title": "Broom: Generate Provider Feature"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.95.0",
+    "@types/mocha": "^10.0.9",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.10.0",
+    "@typescript-eslint/parser": "^8.7.0",
+    "eslint": "^9.13.0",
+    "typescript": "^5.6.3",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
