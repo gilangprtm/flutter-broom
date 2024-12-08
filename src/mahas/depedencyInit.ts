@@ -17,18 +17,14 @@ const updatePubspecYaml = (workspaceFolder: string) => {
   // List dependencies yang akan ditambahkan
   const newDependencies = `
   provider: ^6.1.2
-  go_router: ^14.6.1
   flutter_easyloading: ^3.0.5
-  dio: ^5.7.0
-  http: ^1.2.2`;
+  dio: ^5.7.0`;
 
   // Cek apakah 'dependencies' sudah ada, jika belum, tambahkan
   if (
     !content.includes("provider:") ||
-    !content.includes("go_router:") ||
     !content.includes("flutter_easyloading:") ||
-    !content.includes("dio:") ||
-    !content.includes("http:")
+    !content.includes("dio:")
   ) {
     // Cari bagian dependencies dan masukkan dependencies baru setelahnya
     const dependenciesIndex =

@@ -1,7 +1,7 @@
 // fileUtils.ts
 import * as vscode from "vscode";
-import { executeInitProvider } from "../commands/initProvider";
-import { generateFeature } from "../commands/featureService";
+import { executeInitProvider } from "../mahas/initProvider";
+import { generateFeature } from "../mahas/featureService";
 
 export function createFeatureFiles(featureName: string) {
   const workspaceFolder = vscode.workspace.rootPath;
