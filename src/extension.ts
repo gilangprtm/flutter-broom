@@ -6,16 +6,16 @@ export function activate(context: vscode.ExtensionContext) {
   console.log("Extension flutter-clean-architecture diaktifkan!");
 
   const initProviderCommand = vscode.commands.registerCommand(
-    "flutter-clean-architecture.initProvider",
+    "flutter-clean-architecture.initMahas",
     async () => {
-      // Logic untuk init provider
+      // Logic untuk init mahas
       createInitProviderFiles();
       vscode.window.showInformationMessage("Initializing provider...");
     }
   );
 
   const generateFeatureCommand = vscode.commands.registerCommand(
-    "flutter-clean-architecture.generateFeature",
+    "flutter-clean-architecture.generateFeatureMahas",
     async () => {
       // Logic untuk generate feature
       const featureName = await vscode.window.showInputBox({

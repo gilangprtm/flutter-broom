@@ -2,23 +2,24 @@ import * as fs from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
 import { config } from "../utils/config";
+import * as nameFormat from "../utils/nameFormat";
 
 export function generateFeature(workspaceFolder: string, featureName: string) {
-  const camelCaseName = featureName[0].toLowerCase() + featureName.slice(1);
-  const pascalCaseName = featureName[0].toUpperCase() + featureName.slice(1);
+  const camelCaseName = nameFormat.toCamelCase(featureName);
+  const pascalCaseName = nameFormat.toPascalCase(featureName);
 
   // Paths
   const basePath = path.join(workspaceFolder, config.flutterProjectRoot);
 
   // 1. Generate Files
-  generateServiceFile(basePath, pascalCaseName, camelCaseName);
-  generateProviderFile(basePath, pascalCaseName, camelCaseName);
-  generatePageFile(basePath, pascalCaseName, camelCaseName);
+  generateServiceFile(basePath, pascalCaseName, camelCaseName, featureName);
+  generateProviderFile(basePath, pascalCaseName, camelCaseName, featureName);
+  generatePageFile(basePath, pascalCaseName, camelCaseName, featureName);
 
   // 2. Update Routing Files
-  updateAppRoutes(basePath, pascalCaseName, camelCaseName);
-  updateAppRoutesProvider(basePath, pascalCaseName, camelCaseName);
-  updateAppProviders(basePath, pascalCaseName);
+  updateAppRoutes(basePath, pascalCaseName, camelCaseName, featureName);
+  updateAppRoutesProvider(basePath, pascalCaseName, camelCaseName, featureName);
+  updateAppProviders(basePath, pascalCaseName, featureName);
 
   vscode.window.showInformationMessage(
     `Feature "${pascalCaseName}" created successfully.`
@@ -29,7 +30,8 @@ export function generateFeature(workspaceFolder: string, featureName: string) {
 function generateServiceFile(
   basePath: string,
   pascalCaseName: string,
-  camelCaseName: string
+  camelCaseName: string,
+  featureName: string
 ) {
   const servicePath = path.join(
     basePath,
@@ -37,7 +39,7 @@ function generateServiceFile(
     config.datasourceDirectory,
     config.networkDirectory,
     config.serviceDirectory,
-    `${camelCaseName}_service.dart`
+    `${featureName}_service.dart`
   );
   const content = `
   class ${pascalCaseName}Service {
@@ -51,13 +53,14 @@ function generateServiceFile(
 function generateProviderFile(
   basePath: string,
   pascalCaseName: string,
-  camelCaseName: string
+  camelCaseName: string,
+  featureName: string
 ) {
   const providerPath = path.join(
     basePath,
     config.presentationDirectory,
     config.providersDirectory,
-    `${camelCaseName}_provider.dart`
+    `${featureName}_provider.dart`
   );
   const content = `
   import 'package:flutter/material.dart';
@@ -80,20 +83,21 @@ function generateProviderFile(
 function generatePageFile(
   basePath: string,
   pascalCaseName: string,
-  camelCaseName: string
+  camelCaseName: string,
+  featureName: string
 ) {
   const pagePath = path.join(
     basePath,
     config.presentationDirectory,
     config.pagesDirectory,
-    camelCaseName,
-    `${camelCaseName}_page.dart`
+    featureName,
+    `${featureName}_page.dart`
   );
   const content = `
   import 'package:flutter/material.dart';
   import 'package:provider/provider.dart';
   
-  import '../../providers/${camelCaseName}_provider.dart';
+  import '../../providers/${featureName}_provider.dart';
   
   class ${pascalCaseName}Page extends StatelessWidget {
     const ${pascalCaseName}Page({super.key});
@@ -130,7 +134,8 @@ function generatePageFile(
 function updateAppRoutes(
   basePath: string,
   pascalCaseName: string,
-  camelCaseName: string
+  camelCaseName: string,
+  featureName: string
 ) {
   const routesPath = path.join(
     basePath,
@@ -139,7 +144,7 @@ function updateAppRoutes(
     "app_routes.dart"
   );
 
-  const newRoute = `  static const String ${camelCaseName} = '/${camelCaseName}';\n`;
+  const newRoute = `  static const String ${camelCaseName} = '/${featureName}';\n`;
   let content = "";
 
   if (fs.existsSync(routesPath)) {
@@ -166,7 +171,8 @@ function updateAppRoutes(
 function updateAppRoutesProvider(
   basePath: string,
   pascalCaseName: string,
-  camelCaseName: string
+  camelCaseName: string,
+  featureName: string
 ) {
   const routesProviderPath = path.join(
     basePath,
@@ -176,7 +182,7 @@ function updateAppRoutesProvider(
   );
 
   const newRouteProvider = `      AppRoutes.${camelCaseName}: (context) => const ${pascalCaseName}Page(),\n`;
-  const newImport = `import '../pages/${camelCaseName}/${camelCaseName}_page.dart';\n`;
+  const newImport = `import '../pages/${featureName}/${featureName}_page.dart';\n`;
 
   let content = "";
 
@@ -188,12 +194,12 @@ function updateAppRoutesProvider(
       content = newImport + content;
     }
 
-    // Tambahkan rute baru ke dalam Map
+    // Tambahkan rute baru ke dalam Map, pastikan formatnya benar
     if (!content.includes(newRouteProvider.trim())) {
       content = content.replace(
         /static Map<String, WidgetBuilder> getRoutes\(\) \{\s*return \{\s*([\s\S]*?)\s*\};/,
         (match, p1) =>
-          `static Map<String, WidgetBuilder> getRoutes() {\n    return {\n${p1}${newRouteProvider}    };`
+          `static Map<String, WidgetBuilder> getRoutes() {\n    return {\n${p1}\n${newRouteProvider}    };`
       );
     }
   } else {
@@ -211,7 +217,11 @@ function updateAppRoutesProvider(
   fs.writeFileSync(routesProviderPath, content, { flag: "w" });
 }
 
-function updateAppProviders(basePath: string, pascalCaseName: string) {
+function updateAppProviders(
+  basePath: string,
+  pascalCaseName: string,
+  featureName: string
+) {
   const providersPath = path.join(
     basePath,
     config.presentationDirectory,
@@ -220,7 +230,7 @@ function updateAppProviders(basePath: string, pascalCaseName: string) {
   );
 
   const newProvider = `      ChangeNotifierProvider(create: (_) => ${pascalCaseName}Provider()),\n`;
-  const newImport = `import '../providers/${pascalCaseName.toLowerCase()}_provider.dart';\n`;
+  const newImport = `import '../providers/${featureName}_provider.dart';\n`;
 
   let content = "";
 
@@ -232,12 +242,12 @@ function updateAppProviders(basePath: string, pascalCaseName: string) {
       content = newImport + content;
     }
 
-    // Tambahkan provider baru ke dalam list
+    // Tambahkan provider baru ke dalam list, pastikan formatnya benar
     if (!content.includes(newProvider.trim())) {
       content = content.replace(
         /static List<SingleChildWidget> getProviders\(\) \{\s*return \[\s*([\s\S]*?)\s*\];/,
         (match, p1) =>
-          `static List<SingleChildWidget> getProviders() {\n    return [\n${p1}${newProvider}    ];`
+          `static List<SingleChildWidget> getProviders() {\n    return [\n${p1}\n${newProvider}    ];`
       );
     }
   } else {

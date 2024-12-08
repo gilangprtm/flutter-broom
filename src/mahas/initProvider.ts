@@ -1,9 +1,9 @@
 import { writeFileSync, mkdirSync, readFileSync } from "fs";
 import * as path from "path";
 import * as vscode from "vscode";
-import { generateRouting } from "../commands/routingService";
-import { generateMainDart } from "../commands/mainDart";
-import { updatePubspecYaml } from "../commands/depedencyInit";
+import { generateRouting } from "./routingService";
+import { generateMainDart } from "./mainDart";
+import { updatePubspecYaml } from "./depedencyInit";
 import { config } from "../utils/config";
 import { generateFeature } from "./featureService";
 

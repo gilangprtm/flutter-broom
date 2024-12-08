@@ -16,12 +16,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "flutter-clean-architecture.initProvider",
-        "title": "Broom: Init Provider Setup"
+        "command": "flutter-clean-architecture.initMahas",
+        "title": "Broom: Init Mahas Setup"
       },
       {
-        "command": "flutter-clean-architecture.generateFeature",
-        "title": "Broom: Generate Provider Feature"
+        "command": "flutter-clean-architecture.generateFeatureMahas",
+        "title": "Broom: Generate Mahas Feature"
       }
     ]
   },
@@ -43,5 +43,9 @@
     "typescript": "^5.6.3",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gilangprtm/flutter-broom"
   }
 }

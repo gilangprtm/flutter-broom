@@ -9,5 +9,5 @@
     "outDir": "./out",
     "rootDir": "./src"
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "string.ts"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }
