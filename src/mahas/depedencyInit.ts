@@ -18,13 +18,15 @@ const updatePubspecYaml = (workspaceFolder: string) => {
   const newDependencies = `
   provider: ^6.1.2
   flutter_easyloading: ^3.0.5
-  dio: ^5.7.0`;
+  dio: ^5.7.0
+  pretty_dio_logger: ^1.4.0`;
 
   // Cek apakah 'dependencies' sudah ada, jika belum, tambahkan
   if (
     !content.includes("provider:") ||
     !content.includes("flutter_easyloading:") ||
-    !content.includes("dio:")
+    !content.includes("dio:") ||
+    !content.includes("pretty_dio_logger:")
   ) {
     // Cari bagian dependencies dan masukkan dependencies baru setelahnya
     const dependenciesIndex =

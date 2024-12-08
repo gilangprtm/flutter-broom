@@ -18,6 +18,8 @@ import 'presentation/routes/app_providers.dart';
 import 'presentation/routes/app_routes.dart';
 import 'presentation/routes/app_routes_provider.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() {
   runApp(
     MultiProvider(
@@ -38,6 +40,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.home,
       routes: AppRoutesProvider.getRoutes(),
+      navigatorKey: navigatorKey,
     );
   }
 }

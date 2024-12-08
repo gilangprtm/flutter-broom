@@ -66,6 +66,7 @@ function generateProviderFile(
   import 'package:flutter/material.dart';
   
   class ${pascalCaseName}Provider with ChangeNotifier {
+    late BuildContext context;
     int _count = 0;
   
     int get count => _count;
@@ -105,6 +106,7 @@ function generatePageFile(
     @override
     Widget build(BuildContext context) {
       final provider = Provider.of<${pascalCaseName}Provider>(context);
+      provider.context = context;
   
       return Scaffold(
         appBar: AppBar(
