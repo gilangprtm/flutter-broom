@@ -9,4 +9,6 @@ export const config = {
   pagesDirectory: "pages",
   providersDirectory: "providers",
   routesDirectory: "routes",
+  coreDirectory: "core",
+  helperDirectory: "helper",
 };

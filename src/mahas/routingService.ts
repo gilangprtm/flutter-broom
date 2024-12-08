@@ -82,7 +82,7 @@ class AppRoutes {
 
   // Membuat file jika belum ada
   writeFileSync(appRoutes, appRoutesContent);
-  vscode.window.showInformationMessage("Routing file created with GoRouter.");
+  vscode.window.showInformationMessage("Routing file created successfully.");
 };
 
 export { generateRouting };
