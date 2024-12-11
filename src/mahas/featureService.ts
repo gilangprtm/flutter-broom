@@ -64,9 +64,11 @@ function generateProviderFile(
   );
   const content = `
   import 'package:flutter/material.dart';
+  import '../../data/datasource/network/service/${featureName}_service.dart';
   
   class ${pascalCaseName}Provider with ChangeNotifier {
     late BuildContext context;
+    ${pascalCaseName}Service ${camelCaseName}Service = ${pascalCaseName}Service();
     int _count = 0;
   
     int get count => _count;
