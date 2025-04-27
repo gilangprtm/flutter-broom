@@ -112,6 +112,21 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "flutter-broom.generateInputComponent",
+      async (type: string) => {
+        const workspaceFolder = vscode.workspace.rootPath;
+        if (!workspaceFolder) {
+          vscode.window.showErrorMessage("No workspace folder found!");
+          return;
+        }
+
+        await componentGenerator.generateInputComponent(workspaceFolder, type);
+      }
+    )
+  );
+
   // Register plugin selection command
   const selectPluginCommand = vscode.commands.registerCommand(
     "flutter-broom.selectPlugin",

@@ -89,6 +89,40 @@ export class ComponentsProvider
     { id: "type", label: "Type", description: "Type helper utils" },
   ];
 
+  // Daftar input yang tersedia
+  private readonly INPUT_TYPES = [
+    {
+      id: "text",
+      label: "Text Input",
+      description: "Text input form field",
+    },
+    {
+      id: "checkbox",
+      label: "Checkbox",
+      description: "Checkbox input component",
+    },
+    {
+      id: "radio",
+      label: "Radio",
+      description: "Radio button input component",
+    },
+    {
+      id: "dropdown",
+      label: "Dropdown",
+      description: "Dropdown select input",
+    },
+    {
+      id: "datetime",
+      label: "Date Time",
+      description: "Date and time picker input",
+    },
+    {
+      id: "box",
+      label: "Input Box",
+      description: "Base input box component",
+    },
+  ];
+
   refresh(): void {
     this._onDidChangeTreeData.fire();
   }
@@ -114,6 +148,12 @@ export class ComponentsProvider
         vscode.TreeItemCollapsibleState.Collapsed
       ),
       new ComponentItem(
+        "Input",
+        "Input components for forms",
+        "input",
+        vscode.TreeItemCollapsibleState.Collapsed
+      ),
+      new ComponentItem(
         "Theme",
         "Theming components for Flutter",
         "theme",
@@ -132,6 +172,8 @@ export class ComponentsProvider
     switch (type) {
       case "widget":
         return this.getWidgetItems();
+      case "input":
+        return this.getInputItems();
       case "theme":
         return this.getThemeItems();
       case "utils":
@@ -246,6 +288,40 @@ export class ComponentsProvider
 
     return utilsItems;
   }
+
+  private getInputItems(): ComponentItem[] {
+    const inputItems = this.INPUT_TYPES.map(
+      (input) =>
+        new ComponentItem(
+          input.label,
+          input.description,
+          `input.${input.id}`,
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: "flutter-broom.generateInputComponent",
+            title: `Generate ${input.label} Component`,
+            arguments: [input.id],
+          }
+        )
+    );
+
+    // Tambahkan opsi untuk generate semua input
+    inputItems.push(
+      new ComponentItem(
+        "All Inputs",
+        "Generate all input components",
+        "input.all",
+        vscode.TreeItemCollapsibleState.None,
+        {
+          command: "flutter-broom.generateInputComponent",
+          title: "Generate All Inputs",
+          arguments: ["all"],
+        }
+      )
+    );
+
+    return inputItems;
+  }
 }
 
 /**
@@ -271,6 +347,8 @@ export class ComponentItem extends vscode.TreeItem {
       this.iconPath = new vscode.ThemeIcon("paintcan");
     } else if (type.startsWith("utils")) {
       this.iconPath = new vscode.ThemeIcon("tools");
+    } else if (type.startsWith("input")) {
+      this.iconPath = new vscode.ThemeIcon("keyboard");
     }
   }
 }

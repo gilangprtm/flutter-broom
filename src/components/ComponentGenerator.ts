@@ -36,6 +36,15 @@ export class ComponentGenerator {
 
   private readonly UTILS_TYPES = ["format", "mahas", "type"];
 
+  private readonly INPUT_TYPES = [
+    "text",
+    "checkbox",
+    "radio",
+    "dropdown",
+    "datetime",
+    "box",
+  ];
+
   /**
    * Generate komponen theme
    * @param workspaceFolder Root folder workspace
@@ -164,6 +173,47 @@ export class ComponentGenerator {
   }
 
   /**
+   * Generate komponen input
+   * @param workspaceFolder Root folder workspace
+   * @param inputType Jenis input atau 'all'
+   */
+  public generateInputComponent(
+    workspaceFolder: string,
+    inputType: string
+  ): void {
+    const libPath = path.join(workspaceFolder, this.config.flutterProjectRoot);
+    const inputDirPath = path.join(
+      libPath,
+      this.config.coreDirectory,
+      this.config.mahasDirectory,
+      this.config.mahasInputDirectory
+    );
+
+    // Pastikan direktori input ada
+    FileUtils.createDirectoryIfNotExists(inputDirPath);
+
+    try {
+      if (inputType === "all") {
+        this.generateAllInputs(inputDirPath);
+      } else if (this.INPUT_TYPES.includes(inputType)) {
+        this.generateSingleInput(inputDirPath, inputType);
+      } else {
+        throw new Error(`Input type ${inputType} tidak dikenali`);
+      }
+
+      vscode.window.showInformationMessage(
+        `Input component ${inputType} berhasil dibuat di ${inputDirPath}`
+      );
+    } catch (error) {
+      vscode.window.showErrorMessage(
+        `Gagal membuat komponen input: ${
+          error instanceof Error ? error.message : String(error)
+        }`
+      );
+    }
+  }
+
+  /**
    * Generate color theme
    */
   private generateColorTheme(themeDirPath: string): void {
@@ -241,7 +291,7 @@ export class ComponentGenerator {
     const filePath = path.join(widgetDirPath, fileName);
 
     // Mendapatkan nama template yang sesuai (mis. CustomButtonTemplate, CustomCardTemplate)
-    const templateName = `Custom${
+    const templateName = `Input${
       widgetType.charAt(0).toUpperCase() + widgetType.slice(1)
     }Template`;
 
@@ -261,6 +311,39 @@ export class ComponentGenerator {
   private generateAllWidgets(widgetDirPath: string): void {
     this.WIDGET_TYPES.forEach((widgetType) => {
       this.generateSingleWidget(widgetDirPath, widgetType);
+    });
+  }
+
+  /**
+   * Generate single input dari template
+   * @param inputDirPath Path direktori input
+   * @param inputType Jenis input
+   */
+  private generateSingleInput(inputDirPath: string, inputType: string): void {
+    const fileName = `mahas_input_${inputType}.dart`;
+    const filePath = path.join(inputDirPath, fileName);
+
+    // Mendapatkan nama template yang sesuai
+    let templateName = `Input${
+      inputType.charAt(0).toUpperCase() + inputType.slice(1)
+    }Component`;
+
+    // @ts-ignore - Template pasti ada berdasarkan validasi di atas
+    const content = inputTemplates[templateName];
+
+    if (!content) {
+      throw new Error(`Template untuk input ${inputType} tidak ditemukan`);
+    }
+
+    FileUtils.writeFile(filePath, content);
+  }
+
+  /**
+   * Generate semua jenis input
+   */
+  private generateAllInputs(inputDirPath: string): void {
+    this.INPUT_TYPES.forEach((inputType) => {
+      this.generateSingleInput(inputDirPath, inputType);
     });
   }
 }
