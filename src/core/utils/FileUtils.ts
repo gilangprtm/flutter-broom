@@ -25,6 +25,10 @@ export class FileUtils {
     }
   }
 
+  static createDirectoryIfNotExists(dirPath: string): void {
+    this.createDirectory(dirPath);
+  }
+
   static updateFileContent(
     filePath: string,
     findPattern: RegExp | string,

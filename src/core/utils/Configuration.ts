@@ -3,17 +3,33 @@ import * as vscode from "vscode";
 export class Configuration {
   static readonly DEFAULT_CONFIG = {
     flutterProjectRoot: "lib",
+
+    //data directory
     dataDirectory: "data",
+    modelsDirectory: "models",
     datasourceDirectory: "datasource",
     networkDirectory: "network",
     dbDirectory: "db",
+    repositoryDirectory: "repository",
     serviceDirectory: "service",
+
+    //presentation directory
     presentationDirectory: "presentation",
     pagesDirectory: "pages",
     stateDirectory: "state",
     routesDirectory: "routes",
+
+    //core directorie
     coreDirectory: "core",
+    baseDirectory: "base",
+    diDirectory: "injection",
     helperDirectory: "helper",
+    mahasDirectory: "mahas",
+    mahasInputDirectory: "input",
+    mahasWidgetDirectory: "widget",
+    coreServiceDirectory: "services",
+    themeDirectory: "theme",
+    utilsDirectory: "utils",
   };
 
   static getStateManagementConfig(type: string = "provider") {
@@ -80,6 +96,36 @@ export class Configuration {
       helperDirectory:
         (config.get("helperDirectory") as string) ||
         this.DEFAULT_CONFIG.helperDirectory,
+      mahasDirectory:
+        (config.get("mahasDirectory") as string) ||
+        this.DEFAULT_CONFIG.mahasDirectory,
+      mahasInputDirectory:
+        (config.get("mahasInputDirectory") as string) ||
+        this.DEFAULT_CONFIG.mahasInputDirectory,
+      mahasWidgetDirectory:
+        (config.get("mahasWidgetDirectory") as string) ||
+        this.DEFAULT_CONFIG.mahasWidgetDirectory,
+      coreServiceDirectory:
+        (config.get("coreServiceDirectory") as string) ||
+        this.DEFAULT_CONFIG.coreServiceDirectory,
+      themeDirectory:
+        (config.get("themeDirectory") as string) ||
+        this.DEFAULT_CONFIG.themeDirectory,
+      utilsDirectory:
+        (config.get("utilsDirectory") as string) ||
+        this.DEFAULT_CONFIG.utilsDirectory,
+      modelsDirectory:
+        (config.get("modelsDirectory") as string) ||
+        this.DEFAULT_CONFIG.modelsDirectory,
+      repositoryDirectory:
+        (config.get("repositoryDirectory") as string) ||
+        this.DEFAULT_CONFIG.repositoryDirectory,
+      baseDirectory:
+        (config.get("baseDirectory") as string) ||
+        this.DEFAULT_CONFIG.baseDirectory,
+      diDirectory:
+        (config.get("diDirectory") as string) ||
+        this.DEFAULT_CONFIG.diDirectory,
     };
   }
 

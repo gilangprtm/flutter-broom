@@ -4,19 +4,35 @@ import { FileUtils } from "../../../core/utils/FileUtils";
 import { NameFormatter } from "../../../core/utils/NameFormatter";
 import { Configuration } from "../../../core/utils/Configuration";
 import { TemplateUtils } from "../../../core/utils/TemplateUtils";
+import { DirectoryStructureGenerator } from "../../../core/utils/DirectoryStructureGenerator";
 import * as templates from "./templates";
 
 export class ProviderGenerator implements StateManagementGenerator {
   private config = Configuration.getConfig();
   private stateFolder = Configuration.getStateFolder();
   private stateClassName = Configuration.getStateClassName();
+  private directoryGenerator = new DirectoryStructureGenerator();
 
   initializeProject(workspaceFolder: string): void {
+    // Create directory structure first
+    this.directoryGenerator.createProjectFolderStructure(workspaceFolder);
+
+    // Create provider specific directory
+    const libPath = path.join(workspaceFolder, this.config.flutterProjectRoot);
+    const providerDir = path.join(
+      libPath,
+      this.config.presentationDirectory,
+      this.stateFolder
+    );
+    FileUtils.createDirectoryIfNotExists(providerDir);
+
+    // Generate initial files
     this.updateDependencies(workspaceFolder);
     this.generateMainFile(workspaceFolder);
     this.generateRoutingFiles(workspaceFolder);
     this.generateApiService(workspaceFolder);
     this.generateHelperFiles(workspaceFolder);
+
     // Generate home feature as default
     this.generateFeature(workspaceFolder, "home");
   }
