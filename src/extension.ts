@@ -1,41 +1,99 @@
 import * as vscode from "vscode";
-import { createFeatureFiles, createInitProviderFiles } from "./utils/fileUtils"; // Fungsi untuk generate file
-import "./utils/string";
+import { PluginRegistry } from "./core/PluginRegistry";
+import { CommandProvider } from "./core/interfaces/CommandProvider";
+import { ProviderPlugin } from "./plugins/stateManagement/provider/ProviderPlugin";
+import { PluginsProvider } from "./ui/views/PluginsProvider";
+import { CommandsProvider } from "./ui/views/CommandsProvider";
 
 export function activate(context: vscode.ExtensionContext) {
-  console.log("Extension flutter-clean-architecture diaktifkan!");
+  console.log("Flutter Broom extension is now active!");
 
-  const initProviderCommand = vscode.commands.registerCommand(
-    "flutter-clean-architecture.initMahas",
-    async () => {
-      // Logic untuk init mahas
-      createInitProviderFiles();
-      vscode.window.showInformationMessage("Initializing provider...");
+  // Register all plugins
+  const plugins = [
+    new ProviderPlugin(),
+    // Additional plugins will be added here in the future
+  ];
+
+  // Register each plugin and its commands
+  plugins.forEach((plugin) => {
+    PluginRegistry.register(plugin);
+    plugin.activate(context);
+
+    // Register commands from plugins that implement CommandProvider
+    if ("getCommands" in plugin) {
+      const commandProvider = plugin as unknown as CommandProvider;
+      commandProvider.getCommands().forEach((cmd) => {
+        const disposable = vscode.commands.registerCommand(
+          cmd.id,
+          cmd.callback
+        );
+        context.subscriptions.push(disposable);
+      });
     }
+  });
+
+  // Setup sidebar tree views
+  const pluginsProvider = new PluginsProvider();
+  const commandsProvider = new CommandsProvider();
+
+  vscode.window.registerTreeDataProvider(
+    "flutterBroomPlugins",
+    pluginsProvider
   );
 
-  const generateFeatureCommand = vscode.commands.registerCommand(
-    "flutter-clean-architecture.generateFeatureMahas",
-    async () => {
-      // Logic untuk generate feature
-      const featureName = await vscode.window.showInputBox({
-        placeHolder: "Enter feature name",
-        prompt: "Generate a new feature for your app",
-      });
+  vscode.window.registerTreeDataProvider(
+    "flutterBroomCommands",
+    commandsProvider
+  );
 
-      if (featureName) {
-        // Logic untuk membuat file dan folder feature
-        createFeatureFiles(featureName);
-        vscode.window.showInformationMessage(
-          `Feature ${featureName} generated successfully!`
-        );
+  // Register refresh command
+  context.subscriptions.push(
+    vscode.commands.registerCommand("flutter-broom.refreshPlugins", () => {
+      pluginsProvider.refresh();
+      commandsProvider.refresh();
+    })
+  );
+
+  // Register plugin selection command
+  const selectPluginCommand = vscode.commands.registerCommand(
+    "flutter-broom.selectPlugin",
+    async () => {
+      const allPlugins = PluginRegistry.getAllPlugins();
+      const selection = await vscode.window.showQuickPick(
+        allPlugins.map((p) => ({
+          label: p.name,
+          description: p.description,
+          id: p.id,
+        })),
+        { placeHolder: "Select plugin" }
+      );
+
+      if (selection) {
+        const plugin = PluginRegistry.getPlugin(selection.id);
+        if (plugin && "getCommands" in plugin) {
+          const commandProvider = plugin as unknown as CommandProvider;
+          const commands = commandProvider.getCommands();
+
+          const commandSelection = await vscode.window.showQuickPick(
+            commands.map((c) => ({
+              label: c.title,
+              id: c.id,
+            })),
+            { placeHolder: "Select command to execute" }
+          );
+
+          if (commandSelection) {
+            vscode.commands.executeCommand(commandSelection.id);
+          }
+        }
       }
     }
   );
 
-  // Daftarkan perintah ke context
-  context.subscriptions.push(initProviderCommand);
-  context.subscriptions.push(generateFeatureCommand);
+  context.subscriptions.push(selectPluginCommand);
 }
 
-export function deactivate() {}
+export function deactivate() {
+  // Deactivate all plugins
+  PluginRegistry.getAllPlugins().forEach((plugin) => plugin.deactivate());
+}

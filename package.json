@@ -11,19 +11,79 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onView:flutterBroomPlugins"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "flutter-clean-architecture.initMahas",
-        "title": "Broom: Init Mahas Setup"
+        "command": "flutter-broom.selectPlugin",
+        "title": "Broom: Select Plugin"
       },
       {
-        "command": "flutter-clean-architecture.generateFeatureMahas",
-        "title": "Broom: Generate Mahas Feature"
+        "command": "flutter-broom.initProvider",
+        "title": "Broom: Initialize Provider Architecture"
+      },
+      {
+        "command": "flutter-broom.generateProviderFeature",
+        "title": "Broom: Generate Provider Feature"
+      },
+      {
+        "command": "flutter-broom.refreshPlugins",
+        "title": "Refresh",
+        "icon": "$(refresh)"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "flutter-broom-sidebar",
+          "title": "Flutter Broom",
+          "icon": "images/broom-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "flutter-broom-sidebar": [
+        {
+          "id": "flutterBroomPlugins",
+          "name": "Plugins"
+        },
+        {
+          "id": "flutterBroomCommands",
+          "name": "Commands"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "flutter-broom.refreshPlugins",
+          "when": "view == flutterBroomPlugins",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Flutter Broom",
+      "properties": {
+        "flutterBroom.flutterProjectRoot": {
+          "type": "string",
+          "default": "lib",
+          "description": "Root directory of the Flutter project"
+        },
+        "flutterBroom.stateManagement": {
+          "type": "string",
+          "default": "provider",
+          "enum": [
+            "provider",
+            "riverpod"
+          ],
+          "description": "Default state management to use"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
