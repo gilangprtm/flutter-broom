@@ -10,11 +10,34 @@ export class Configuration {
     serviceDirectory: "service",
     presentationDirectory: "presentation",
     pagesDirectory: "pages",
-    providersDirectory: "providers",
+    stateDirectory: "state",
     routesDirectory: "routes",
     coreDirectory: "core",
     helperDirectory: "helper",
   };
+
+  static getStateManagementConfig(type: string = "provider") {
+    const configs: { [key: string]: { dirName: string; className: string } } = {
+      provider: {
+        dirName: "providers",
+        className: "Provider",
+      },
+      riverpod: {
+        dirName: "providers",
+        className: "Provider",
+      },
+      bloc: {
+        dirName: "blocs",
+        className: "Bloc",
+      },
+      getx: {
+        dirName: "controllers",
+        className: "Controller",
+      },
+    };
+
+    return configs[type] || configs["provider"];
+  }
 
   static getConfig(): typeof Configuration.DEFAULT_CONFIG {
     // In the future, this could read from VS Code settings
@@ -45,9 +68,9 @@ export class Configuration {
       pagesDirectory:
         (config.get("pagesDirectory") as string) ||
         this.DEFAULT_CONFIG.pagesDirectory,
-      providersDirectory:
-        (config.get("providersDirectory") as string) ||
-        this.DEFAULT_CONFIG.providersDirectory,
+      stateDirectory:
+        (config.get("stateDirectory") as string) ||
+        this.DEFAULT_CONFIG.stateDirectory,
       routesDirectory:
         (config.get("routesDirectory") as string) ||
         this.DEFAULT_CONFIG.routesDirectory,
@@ -63,5 +86,17 @@ export class Configuration {
   static getStateManagement(): string {
     const config = vscode.workspace.getConfiguration("flutterBroom");
     return (config.get("stateManagement") as string) || "provider";
+  }
+
+  static getStateFolder(): string {
+    const stateManagement = this.getStateManagement();
+    const stateConfig = this.getStateManagementConfig(stateManagement);
+    return stateConfig.dirName;
+  }
+
+  static getStateClassName(): string {
+    const stateManagement = this.getStateManagement();
+    const stateConfig = this.getStateManagementConfig(stateManagement);
+    return stateConfig.className;
   }
 }

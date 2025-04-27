@@ -8,6 +8,8 @@ import * as templates from "./templates";
 
 export class ProviderGenerator implements StateManagementGenerator {
   private config = Configuration.getConfig();
+  private stateFolder = Configuration.getStateFolder();
+  private stateClassName = Configuration.getStateClassName();
 
   initializeProject(workspaceFolder: string): void {
     this.updateDependencies(workspaceFolder);
@@ -68,7 +70,12 @@ export class ProviderGenerator implements StateManagementGenerator {
       "main.dart"
     );
 
-    FileUtils.writeFile(mainFilePath, templates.mainTemplate);
+    // Render the template with appropriate paths
+    const renderedTemplate = TemplateUtils.render(templates.mainTemplate, {
+      stateFolder: this.stateFolder,
+    });
+
+    FileUtils.writeFile(mainFilePath, renderedTemplate);
     console.log("main.dart generated successfully.");
   }
 
@@ -104,7 +111,16 @@ export class ProviderGenerator implements StateManagementGenerator {
       this.config.routesDirectory,
       "app_providers.dart"
     );
-    FileUtils.writeFile(appProvidersPath, templates.appProvidersTemplate);
+
+    // Render the template with appropriate class names
+    const renderedTemplate = TemplateUtils.render(
+      templates.appProvidersTemplate,
+      {
+        stateClassName: this.stateClassName,
+      }
+    );
+
+    FileUtils.writeFile(appProvidersPath, renderedTemplate);
 
     console.log("Routing files generated successfully.");
   }
@@ -142,12 +158,7 @@ export class ProviderGenerator implements StateManagementGenerator {
     const camelName = NameFormatter.toCamelCase(featureName);
 
     this.generateServiceFile(workspaceFolder, featureName, pascalName);
-    this.generateProviderFile(
-      workspaceFolder,
-      featureName,
-      pascalName,
-      camelName
-    );
+    this.generateStateFile(workspaceFolder, featureName, pascalName, camelName);
     this.generatePageFile(workspaceFolder, featureName, pascalName, camelName);
     this.updateRoutingFiles(
       workspaceFolder,
@@ -181,27 +192,28 @@ export class ProviderGenerator implements StateManagementGenerator {
     FileUtils.writeFile(servicePath, content);
   }
 
-  private generateProviderFile(
+  private generateStateFile(
     workspaceFolder: string,
     featureName: string,
     pascalName: string,
     camelName: string
   ): void {
-    const providerPath = path.join(
+    const statePath = path.join(
       workspaceFolder,
       this.config.flutterProjectRoot,
       this.config.presentationDirectory,
-      this.config.providersDirectory,
-      `${featureName}_provider.dart`
+      this.stateFolder, // Use dynamic state folder name
+      `${featureName}_provider.dart` // For provider, we still keep provider suffix
     );
 
     const content = TemplateUtils.render(templates.providerTemplate, {
       pascalName,
       camelName,
       featureName,
+      stateClassName: this.stateClassName,
     });
 
-    FileUtils.writeFile(providerPath, content);
+    FileUtils.writeFile(statePath, content);
   }
 
   private generatePageFile(
@@ -222,6 +234,8 @@ export class ProviderGenerator implements StateManagementGenerator {
     const content = TemplateUtils.render(templates.pageTemplate, {
       pascalName,
       featureName,
+      stateFolder: this.stateFolder,
+      stateClassName: this.stateClassName,
     });
 
     FileUtils.writeFile(pagePath, content);
@@ -298,8 +312,8 @@ export class ProviderGenerator implements StateManagementGenerator {
 
     if (FileUtils.fileExists(appProvidersPath)) {
       let content = FileUtils.readFile(appProvidersPath);
-      const newProvider = `      ChangeNotifierProvider(create: (_) => ${pascalName}Provider()),`;
-      const newImport = `import '../providers/${featureName}_provider.dart';`;
+      const newProvider = `      ChangeNotifierProvider(create: (_) => ${pascalName}${this.stateClassName}()),`;
+      const newImport = `import '../${this.stateFolder}/${featureName}_provider.dart';`;
 
       // Add import if not exists
       if (!content.includes(newImport)) {

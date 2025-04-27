@@ -3,14 +3,14 @@
 export const pageTemplate = `import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/{{featureName}}_provider.dart';
+import '../../{{stateFolder}}/{{featureName}}_provider.dart';
 
 class {{pascalName}}Page extends StatelessWidget {
   const {{pascalName}}Page({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<{{pascalName}}Provider>(context);
+    final provider = Provider.of<{{pascalName}}{{stateClassName}}>(context);
     provider.context = context;
 
     return Scaffold(
