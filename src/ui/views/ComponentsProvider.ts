@@ -13,6 +13,82 @@ export class ComponentsProvider
     ComponentItem | undefined | null | void
   > = this._onDidChangeTreeData.event;
 
+  // Daftar widget yang tersedia
+  private readonly WIDGET_TYPES = [
+    {
+      id: "accordion",
+      label: "Accordion",
+      description: "Collapsible content panels",
+    },
+    {
+      id: "alert",
+      label: "Alert",
+      description: "Alert and notification dialogs",
+    },
+    { id: "avatar", label: "Avatar", description: "User profile avatars" },
+    {
+      id: "badge",
+      label: "Badge",
+      description: "Status indicators and counters",
+    },
+    {
+      id: "bottomsheet",
+      label: "Bottom Sheet",
+      description: "Slide-up panels from bottom",
+    },
+    {
+      id: "button",
+      label: "Button",
+      description: "Custom button implementations",
+    },
+    {
+      id: "card",
+      label: "Card",
+      description: "Content containers with various styles",
+    },
+    { id: "grid", label: "Grid", description: "Grid layout components" },
+    { id: "image", label: "Image", description: "Enhanced image components" },
+    { id: "loader", label: "Loader", description: "Loading indicators" },
+    {
+      id: "menubar",
+      label: "Menu Bar",
+      description: "Navigation menu components",
+    },
+    {
+      id: "responsive",
+      label: "Responsive",
+      description: "Responsive layout helpers",
+    },
+    {
+      id: "searchbar",
+      label: "Search Bar",
+      description: "Search input components",
+    },
+    {
+      id: "snackbar",
+      label: "Snackbar",
+      description: "Brief message notifications",
+    },
+    { id: "tab", label: "Tab", description: "Tab navigation components" },
+    { id: "tile", label: "Tile", description: "List tile components" },
+    { id: "toast", label: "Toast", description: "Toast message notifications" },
+  ];
+
+  // Daftar utility yang tersedia
+  private readonly UTILS_TYPES = [
+    {
+      id: "format",
+      label: "Format",
+      description: "Format utils for text, dates, numbers",
+    },
+    {
+      id: "mahas",
+      label: "Mahas",
+      description: "Mahas utils for app functionality",
+    },
+    { id: "type", label: "Type", description: "Type helper utils" },
+  ];
+
   refresh(): void {
     this._onDidChangeTreeData.fire();
   }
@@ -66,41 +142,37 @@ export class ComponentsProvider
   }
 
   private getWidgetItems(): ComponentItem[] {
-    return [
+    const widgetItems = this.WIDGET_TYPES.map(
+      (widget) =>
+        new ComponentItem(
+          widget.label,
+          widget.description,
+          `widget.${widget.id}`,
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: "flutter-broom.generateWidgetComponent",
+            title: `Generate ${widget.label} Widget`,
+            arguments: [widget.id],
+          }
+        )
+    );
+
+    // Tambahkan opsi untuk generate semua widget
+    widgetItems.push(
       new ComponentItem(
-        "Button",
-        "Custom button implementations",
-        "widget.button",
+        "All Widgets",
+        "Generate all widget components",
+        "widget.all",
         vscode.TreeItemCollapsibleState.None,
         {
           command: "flutter-broom.generateWidgetComponent",
-          title: "Generate Button Widget",
-          arguments: ["button"],
+          title: "Generate All Widgets",
+          arguments: ["all"],
         }
-      ),
-      new ComponentItem(
-        "Card",
-        "Custom card implementations",
-        "widget.card",
-        vscode.TreeItemCollapsibleState.None,
-        {
-          command: "flutter-broom.generateWidgetComponent",
-          title: "Generate Card Widget",
-          arguments: ["card"],
-        }
-      ),
-      new ComponentItem(
-        "Input",
-        "Custom input fields",
-        "widget.input",
-        vscode.TreeItemCollapsibleState.None,
-        {
-          command: "flutter-broom.generateWidgetComponent",
-          title: "Generate Input Widget",
-          arguments: ["input"],
-        }
-      ),
-    ];
+      )
+    );
+
+    return widgetItems;
   }
 
   private getThemeItems(): ComponentItem[] {
@@ -142,40 +214,23 @@ export class ComponentsProvider
   }
 
   private getUtilsItems(): ComponentItem[] {
-    return [
-      new ComponentItem(
-        "Format",
-        "Format utils",
-        "utils.format",
-        vscode.TreeItemCollapsibleState.None,
-        {
-          command: "flutter-broom.generateUtilsComponent",
-          title: "Generate Format Utils",
-          arguments: ["format"],
-        }
-      ),
-      new ComponentItem(
-        "Mahas",
-        "Mahas utils",
-        "utils.mahas",
-        vscode.TreeItemCollapsibleState.None,
-        {
-          command: "flutter-broom.generateUtilsComponent",
-          title: "Generate Mahas Utils",
-          arguments: ["mahas"],
-        }
-      ),
-      new ComponentItem(
-        "Type",
-        "Type utils",
-        "utils.type",
-        vscode.TreeItemCollapsibleState.None,
-        {
-          command: "flutter-broom.generateUtilsComponent",
-          title: "Generate Type Utils",
-          arguments: ["type"],
-        }
-      ),
+    const utilsItems = this.UTILS_TYPES.map(
+      (util) =>
+        new ComponentItem(
+          util.label,
+          util.description,
+          `utils.${util.id}`,
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: "flutter-broom.generateUtilsComponent",
+            title: `Generate ${util.label} Utils`,
+            arguments: [util.id],
+          }
+        )
+    );
+
+    // Tambahkan opsi untuk generate semua utils
+    utilsItems.push(
       new ComponentItem(
         "All Utils",
         "Generate all utils components",
@@ -186,8 +241,10 @@ export class ComponentsProvider
           title: "Generate All Utils",
           arguments: ["all"],
         }
-      ),
-    ];
+      )
+    );
+
+    return utilsItems;
   }
 }
 

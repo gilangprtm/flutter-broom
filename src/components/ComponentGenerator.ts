@@ -14,6 +14,27 @@ import * as inputTemplates from "./inputs";
  */
 export class ComponentGenerator {
   private config = Configuration.getConfig();
+  private readonly WIDGET_TYPES = [
+    "accordion",
+    "alert",
+    "avatar",
+    "badge",
+    "bottomsheet",
+    "button",
+    "card",
+    "grid",
+    "image",
+    "loader",
+    "menubar",
+    "responsive",
+    "searchbar",
+    "snackbar",
+    "tab",
+    "tile",
+    "toast",
+  ];
+
+  private readonly UTILS_TYPES = ["format", "mahas", "type"];
 
   /**
    * Generate komponen theme
@@ -64,7 +85,7 @@ export class ComponentGenerator {
   /**
    * Generate komponen utils
    * @param workspaceFolder Root folder workspace
-   * @param utilsType Jenis utils (format, mahas, all)
+   * @param utilsType Jenis utils (format, mahas, type, all)
    */
   public generateUtilsComponent(
     workspaceFolder: string,
@@ -81,21 +102,12 @@ export class ComponentGenerator {
     FileUtils.createDirectoryIfNotExists(utilsDirPath);
 
     try {
-      switch (utilsType) {
-        case "format":
-          this.generateFormatUtils(utilsDirPath);
-          break;
-        case "mahas":
-          this.generateMahasUtils(utilsDirPath);
-          break;
-        case "type":
-          this.generateTypeUtils(utilsDirPath);
-          break;
-        case "all":
-          this.generateAllUtils(utilsDirPath);
-          break;
-        default:
-          throw new Error(`Utils type ${utilsType} tidak dikenali`);
+      if (utilsType === "all") {
+        this.generateAllUtils(utilsDirPath);
+      } else if (this.UTILS_TYPES.includes(utilsType)) {
+        this.generateSingleUtils(utilsDirPath, utilsType);
+      } else {
+        throw new Error(`Utils type ${utilsType} tidak dikenali`);
       }
 
       vscode.window.showInformationMessage(
@@ -113,7 +125,7 @@ export class ComponentGenerator {
   /**
    * Generate komponen widget
    * @param workspaceFolder Root folder workspace
-   * @param widgetType Jenis widget (button, card, input)
+   * @param widgetType Jenis widget atau 'all'
    */
   public generateWidgetComponent(
     workspaceFolder: string,
@@ -131,18 +143,12 @@ export class ComponentGenerator {
     FileUtils.createDirectoryIfNotExists(widgetDirPath);
 
     try {
-      switch (widgetType) {
-        case "button":
-          this.generateButtonWidget(widgetDirPath);
-          break;
-        case "card":
-          this.generateCardWidget(widgetDirPath);
-          break;
-        case "input":
-          this.generateInputWidget(widgetDirPath);
-          break;
-        default:
-          throw new Error(`Widget type ${widgetType} tidak dikenali`);
+      if (widgetType === "all") {
+        this.generateAllWidgets(widgetDirPath);
+      } else if (this.WIDGET_TYPES.includes(widgetType)) {
+        this.generateSingleWidget(widgetDirPath, widgetType);
+      } else {
+        throw new Error(`Widget type ${widgetType} tidak dikenali`);
       }
 
       vscode.window.showInformationMessage(
@@ -190,65 +196,71 @@ export class ComponentGenerator {
   }
 
   /**
-   * Generate format utils
+   * Generate single utils dari template
+   * @param utilsDirPath Path direktori utils
+   * @param utilsType Jenis utils
    */
-  private generateFormatUtils(utilsDirPath: string): void {
-    const formatFilePath = path.join(utilsDirPath, "format_utils.dart");
-    const formatContent = utilsTemplates.AppFormat;
-    FileUtils.writeFile(formatFilePath, formatContent);
+  private generateSingleUtils(utilsDirPath: string, utilsType: string): void {
+    const fileName = `${utilsType}_utils.dart`;
+    const filePath = path.join(utilsDirPath, fileName);
+
+    // Mendapatkan nama template yang sesuai (mis. AppFormat, AppMahas, AppType)
+    const templateName = `App${
+      utilsType.charAt(0).toUpperCase() + utilsType.slice(1)
+    }`;
+
+    // @ts-ignore - Template pasti ada berdasarkan validasi di atas
+    const content = utilsTemplates[templateName];
+
+    if (!content) {
+      throw new Error(`Template untuk ${utilsType} tidak ditemukan`);
+    }
+
+    FileUtils.writeFile(filePath, content);
   }
 
   /**
-   * Generate mahas utils
-   */
-  private generateMahasUtils(utilsDirPath: string): void {
-    const mahasFilePath = path.join(utilsDirPath, "mahas_utils.dart");
-    const mahasContent = utilsTemplates.AppMahas;
-    FileUtils.writeFile(mahasFilePath, mahasContent);
-  }
-
-  /**
-   * Generate type utils
-   */
-  private generateTypeUtils(utilsDirPath: string): void {
-    const typeFilePath = path.join(utilsDirPath, "type_utils.dart");
-    const typeContent = utilsTemplates.AppType;
-    FileUtils.writeFile(typeFilePath, typeContent);
-  }
-
-  /**
-   * Generate all utils
+   * Generate semua jenis utils
    */
   private generateAllUtils(utilsDirPath: string): void {
-    this.generateFormatUtils(utilsDirPath);
-    this.generateMahasUtils(utilsDirPath);
-    this.generateTypeUtils(utilsDirPath);
+    this.UTILS_TYPES.forEach((utilsType) => {
+      this.generateSingleUtils(utilsDirPath, utilsType);
+    });
   }
 
   /**
-   * Generate button widget
+   * Generate single widget dari template
+   * @param widgetDirPath Path direktori widget
+   * @param widgetType Jenis widget
    */
-  private generateButtonWidget(widgetDirPath: string): void {
-    const buttonFilePath = path.join(widgetDirPath, "custom_button.dart");
-    const buttonContent = widgetTemplates.CustomButtonTemplate;
-    FileUtils.writeFile(buttonFilePath, buttonContent);
+  private generateSingleWidget(
+    widgetDirPath: string,
+    widgetType: string
+  ): void {
+    const fileName = `mahas_${widgetType}.dart`;
+    const filePath = path.join(widgetDirPath, fileName);
+
+    // Mendapatkan nama template yang sesuai (mis. CustomButtonTemplate, CustomCardTemplate)
+    const templateName = `Custom${
+      widgetType.charAt(0).toUpperCase() + widgetType.slice(1)
+    }Template`;
+
+    // @ts-ignore - Template pasti ada berdasarkan validasi di atas
+    const content = widgetTemplates[templateName];
+
+    if (!content) {
+      throw new Error(`Template untuk ${widgetType} tidak ditemukan`);
+    }
+
+    FileUtils.writeFile(filePath, content);
   }
 
   /**
-   * Generate card widget
+   * Generate semua jenis widget
    */
-  private generateCardWidget(widgetDirPath: string): void {
-    const cardFilePath = path.join(widgetDirPath, "custom_card.dart");
-    const cardContent = widgetTemplates.CustomCardTemplate;
-    FileUtils.writeFile(cardFilePath, cardContent);
-  }
-
-  /**
-   * Generate input widget
-   */
-  private generateInputWidget(widgetDirPath: string): void {
-    const inputFilePath = path.join(widgetDirPath, "custom_text_field.dart");
-    const inputContent = inputTemplates.CustomTextFieldTemplate;
-    FileUtils.writeFile(inputFilePath, inputContent);
+  private generateAllWidgets(widgetDirPath: string): void {
+    this.WIDGET_TYPES.forEach((widgetType) => {
+      this.generateSingleWidget(widgetDirPath, widgetType);
+    });
   }
 }
