@@ -4,6 +4,8 @@ import { CommandProvider } from "./core/interfaces/CommandProvider";
 import { ProviderPlugin } from "./plugins/stateManagement/provider/ProviderPlugin";
 import { PluginsProvider } from "./ui/views/PluginsProvider";
 import { CommandsProvider } from "./ui/views/CommandsProvider";
+import { ComponentsProvider } from "./ui/views/ComponentsProvider";
+import { ComponentGenerator } from "./components/ComponentGenerator";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log("Flutter Broom extension is now active!");
@@ -35,6 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Setup sidebar tree views
   const pluginsProvider = new PluginsProvider();
   const commandsProvider = new CommandsProvider();
+  const componentsProvider = new ComponentsProvider();
 
   vscode.window.registerTreeDataProvider(
     "flutterBroomPlugins",
@@ -46,12 +49,67 @@ export function activate(context: vscode.ExtensionContext) {
     commandsProvider
   );
 
+  vscode.window.registerTreeDataProvider(
+    "flutterBroomComponents",
+    componentsProvider
+  );
+
+  // Create component generator
+  const componentGenerator = new ComponentGenerator();
+
   // Register refresh command
   context.subscriptions.push(
     vscode.commands.registerCommand("flutter-broom.refreshPlugins", () => {
       pluginsProvider.refresh();
       commandsProvider.refresh();
+      componentsProvider.refresh();
     })
+  );
+
+  // Register component generation commands
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "flutter-broom.generateWidgetComponent",
+      async (type: string) => {
+        const workspaceFolder = vscode.workspace.rootPath;
+        if (!workspaceFolder) {
+          vscode.window.showErrorMessage("No workspace folder found!");
+          return;
+        }
+
+        await componentGenerator.generateWidgetComponent(workspaceFolder, type);
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "flutter-broom.generateThemeComponent",
+      async (type: string) => {
+        const workspaceFolder = vscode.workspace.rootPath;
+        if (!workspaceFolder) {
+          vscode.window.showErrorMessage("No workspace folder found!");
+          return;
+        }
+
+        await componentGenerator.generateThemeComponent(workspaceFolder, type);
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(
+      "flutter-broom.generateUtilsComponent",
+      async (type: string) => {
+        const workspaceFolder = vscode.workspace.rootPath;
+        if (!workspaceFolder) {
+          vscode.window.showErrorMessage("No workspace folder found!");
+          return;
+        }
+
+        await componentGenerator.generateUtilsComponent(workspaceFolder, type);
+      }
+    )
   );
 
   // Register plugin selection command

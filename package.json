@@ -12,7 +12,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onView:flutterBroomPlugins"
+    "onView:flutterBroomPlugins",
+    "onView:flutterBroomComponents"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -28,6 +29,18 @@
       {
         "command": "flutter-broom.generateProviderFeature",
         "title": "Broom: Generate Provider Feature"
+      },
+      {
+        "command": "flutter-broom.generateWidgetComponent",
+        "title": "Broom: Generate Widget Component"
+      },
+      {
+        "command": "flutter-broom.generateThemeComponent",
+        "title": "Broom: Generate Theme Component"
+      },
+      {
+        "command": "flutter-broom.generateUtilsComponent",
+        "title": "Broom: Generate Utils Component"
       },
       {
         "command": "flutter-broom.refreshPlugins",
@@ -51,6 +64,10 @@
           "name": "Plugins"
         },
         {
+          "id": "flutterBroomComponents",
+          "name": "Components"
+        },
+        {
           "id": "flutterBroomCommands",
           "name": "Commands"
         }
@@ -60,7 +77,7 @@
       "view/title": [
         {
           "command": "flutter-broom.refreshPlugins",
-          "when": "view == flutterBroomPlugins",
+          "when": "view == flutterBroomPlugins || view == flutterBroomComponents",
           "group": "navigation"
         }
       ]
