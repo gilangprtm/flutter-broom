@@ -11,22 +11,4 @@
 
 ## Cara Penggunaan
 
-![Demo Flutter Broom](images/how_to_use.gif)
-
-1. **Generate Struktur Proyek:** `Flutter Broom: Generate Project Structure`
-2. **Generate Fitur Baru:** `Flutter Broom: Generate New Feature`
-
-## Kebutuhan
-
-- Flutter SDK
-- Visual Studio Code
-- Node.js
-
-## Konfigurasi
-
-- `flutterBroom.projectRoot`: Jalur root proyek Flutter. Default: `lib`
-- `flutterBroom.usePascalCase`: Penggunaan PascalCase untuk penamaan file. Default: `true`
-
-## Versi
-
-- 1.0.0: Rilis awal Flutter Broom
+![Demo Flutter Broom](images/how_to_use.mp4)
