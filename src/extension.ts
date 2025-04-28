@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { PluginRegistry } from "./core/PluginRegistry";
 import { CommandProvider } from "./core/interfaces/CommandProvider";
 import { ProviderPlugin } from "./plugins/stateManagement/provider/ProviderPlugin";
+import { RiverpodPlugin } from "./plugins/stateManagement/riverpod/RiverpodPlugin";
 import { PluginsProvider } from "./ui/views/PluginsProvider";
 import { CommandsProvider } from "./ui/views/CommandsProvider";
 import { ComponentsProvider } from "./ui/views/ComponentsProvider";
@@ -13,6 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Register all plugins
   const plugins = [
     new ProviderPlugin(),
+    new RiverpodPlugin(),
     // Additional plugins will be added here in the future
   ];
 

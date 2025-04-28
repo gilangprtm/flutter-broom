@@ -16,11 +16,12 @@ import { pageTemplate } from "./feature/PageTemplate";
 import { providerTemplate } from "./feature/ProviderTemplate";
 
 // Service templates
-import { dioServiceTemplate } from "./service/ApiServiceTemplate";
+import { dioServiceTemplate } from "../../../global/services/DioServiceTemplate";
+import { httpServiceTemplate } from "../../../global/services/HttpServiceTemplate";
 import { serviceTemplate } from "./service/FeatureServiceTemplate";
 
 // Helper templates
-import { dialogHelperTemplate } from "./helper/DialogHelperTemplate";
+import { dialogHelperTemplate } from "../../../global/helper/DialogHelperTemplate";
 
 // Re-export all templates
 export {
@@ -37,6 +38,7 @@ export {
 
   // Service
   dioServiceTemplate,
+  httpServiceTemplate,
   serviceTemplate,
 
   // Helper

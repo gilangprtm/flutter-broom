@@ -154,6 +154,19 @@ export class ProviderGenerator implements StateManagementGenerator {
 
     FileUtils.writeFile(dioServicePath, templates.dioServiceTemplate);
     console.log("API service generated successfully.");
+
+    const httpServicePath = path.join(
+      workspaceFolder,
+      this.config.flutterProjectRoot,
+      this.config.dataDirectory,
+      this.config.datasourceDirectory,
+      this.config.networkDirectory,
+      this.config.dbDirectory,
+      "http_service.dart"
+    );
+
+    FileUtils.writeFile(httpServicePath, templates.httpServiceTemplate);
+    console.log("HTTP service generated successfully.");
   }
 
   generateHelperFiles(workspaceFolder: string): void {
