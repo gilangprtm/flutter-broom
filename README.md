@@ -11,4 +11,4 @@
 
 ## Cara Penggunaan
 
-![Demo Flutter Broom](images/how_to_use.mp4)
+![Demo Flutter Broom](images/how_to_use.gif)
