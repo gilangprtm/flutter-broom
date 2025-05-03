@@ -217,7 +217,7 @@ export class RiverpodGenerator implements StateManagementGenerator {
       workspaceFolder,
       this.config.flutterProjectRoot,
       this.config.presentationDirectory,
-      this.config.pagesDirectory,
+      "riverpod",
       featureName,
       `${featureName}_state.dart`
     );
@@ -239,7 +239,7 @@ export class RiverpodGenerator implements StateManagementGenerator {
       workspaceFolder,
       this.config.flutterProjectRoot,
       this.config.presentationDirectory,
-      this.config.pagesDirectory,
+      "riverpod",
       featureName,
       `${featureName}_notifier.dart`
     );
@@ -261,7 +261,7 @@ export class RiverpodGenerator implements StateManagementGenerator {
       workspaceFolder,
       this.config.flutterProjectRoot,
       this.config.presentationDirectory,
-      this.config.pagesDirectory,
+      "riverpod",
       featureName,
       `${featureName}_provider.dart`
     );
@@ -293,7 +293,7 @@ export class RiverpodGenerator implements StateManagementGenerator {
     const pageTemplate = `
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '${featureName}_provider.dart';
+import '../../riverpod/${featureName}/${featureName}_provider.dart';
 
 class ${pascalName}Page extends ConsumerWidget {
   const ${pascalName}Page({Key? key}) : super(key: key);
