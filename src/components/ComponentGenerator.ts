@@ -291,7 +291,7 @@ export class ComponentGenerator {
     const filePath = path.join(widgetDirPath, fileName);
 
     // Mendapatkan nama template yang sesuai (mis. CustomButtonTemplate, CustomCardTemplate)
-    const templateName = `Input${
+    const templateName = `Custom${
       widgetType.charAt(0).toUpperCase() + widgetType.slice(1)
     }Template`;
 
