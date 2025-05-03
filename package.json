@@ -2,7 +2,7 @@
   "name": "flutter-broom",
   "displayName": "Flutter Broom",
   "description": "Make flutter clean architecture with flutter broom",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "publisher": "GilangPratama",
   "icon": "images/extension-icon.png",
   "engines": {
